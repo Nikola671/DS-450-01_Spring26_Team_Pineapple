@@ -2,3 +2,4 @@
 ## Group Members: Samia, Sal, Nik
 This is the git repository for Team Pineapple in DS-450-01 Spring 2026. All collaborations and necessary materials for group work will go here. 
 The Alternative Fueling Locations folder contains the Tableau, Powerpoint, and Word documents corresponding to the first group mini project. 
+The CAPO folder contains the CapoEDA file, which is where the final draft of our team's work on mini project two is located along with other misellaneous used files and documents. 
