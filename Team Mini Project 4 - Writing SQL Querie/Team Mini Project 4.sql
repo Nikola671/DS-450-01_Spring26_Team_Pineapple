@@ -97,7 +97,13 @@ ORDER BY title ASC;
 
 # Query 9: Get the number of films each manager holds. Use only the manager staff id to identify the manager. 
 # Name the column with the number of films “num_films”.
+SELECT manager_staff_id, COUNT(film.film_id) as num_films
+FROM store JOIN inventory ON store.store_id = inventory.store_id JOIN film ON inventory.film_id = film.film_id
+GROUP BY manager_staff_id;
 
-
-# QUery 10.Get the number of customers per manager. Use only the manager staff id to identify the manager. 
+# Query 10: Get the number of customers per manager. Use only the manager staff id to identify the manager. 
 # Name the column with the number of films “num_customers”. Order by store id (ascending).
+SELECT manager_staff_id, COUNT(customer_id) as num_customers
+FROM store JOIN customer ON store.store_id = customer.store_id
+GROUP BY manager_staff_id, store.store_id
+ORDER BY store.store_id ASC;
