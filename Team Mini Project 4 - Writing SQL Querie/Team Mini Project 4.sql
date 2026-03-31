@@ -103,7 +103,8 @@ GROUP BY manager_staff_id;
 
 # Query 10: Get the number of customers per manager. Use only the manager staff id to identify the manager. 
 # Name the column with the number of films “num_customers”. Order by store id (ascending).
+
 SELECT manager_staff_id, COUNT(customer_id) as num_customers
 FROM store JOIN customer ON store.store_id = customer.store_id
-GROUP BY manager_staff_id, store.store_id
+GROUP BY manager_staff_id
 ORDER BY store.store_id ASC;
