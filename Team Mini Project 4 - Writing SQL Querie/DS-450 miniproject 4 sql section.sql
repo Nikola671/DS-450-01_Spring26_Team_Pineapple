@@ -1,0 +1,129 @@
+# access database
+use sakila;
+
+-- SINGLE TABLE QUERIES --
+#1. Get a list of all film titles alphabetized by title.
+select title from film order by title;
+#2. Find the description, release year, length, and rang for the movie “KENTUCKIAN GIANT”.
+select title, release_year, length, rating from film where title = 'KENTUCKIAN GIANT';
+#3. Find the first name and last name of each employee (staff table). Your query should include the last name first, and then the first name.
+select first_name, last_name from staff;
+#4. Repeat the query above, but this me, the results should include only one column with the format last name, first name. The output column should be named “name”
+select concat(last_name, ' ', first_name) as name from staff;
+#5. Get the number of customers. The output should be a single number. Name the column “num_customers”
+select count(customer_id) as num_customers from customer;
+#6. Get the number of customers who are active vs inactivesys in the system.
+select active, count(active) from customer group by active;
+#7. Get the average amount a customer spends on a rental.
+select avg(amount) from payment;
+#8. Get maximum amount any customer has spent on a rental.
+select max(amount) from payment;
+#9. Get a list of the actors. The results should include only one column with the format last name, first name. The column should be named “actor_name” The results should be sorted be sorted alphabetically by the last name (ascending).
+select concat(last_name, ' ', first_name) as actor_name from actor order by last_name asc;
+#10. Repeat this query above, but the results should be in reverse order.
+select concat(last_name, ' ', first_name) as actor_name from actor order by last_name desc;
+
+
+-- MULTI TABLE QUERIES --
+# Query 1: Get a list of category names and a count of movies that fall into that category. 
+# Name the category column “category” the count column “num_films”. Order the results alphabetically (ascending). 
+# Use the WHERE clause to join the tables.
+SELECT name as category, count(*) as num_films
+FROM category, film, film_category
+WHERE film_category.film_id = film.film_id AND film_category.category_id = category.category_id
+GROUP BY name
+ORDER BY name ASC;
+
+# alternative option
+SELECT name as category, count(film.film_id) as num_films
+FROM category, film, film_category
+WHERE film_category.film_id = film.film_id AND film_category.category_id = category.category_id
+GROUP BY name
+ORDER BY name ASC;
+
+# Query 2: Repeat the query above using a JOIN clause instead of the WHERE clause.
+SELECT name as category, count(*) as num_films
+FROM film_category JOIN film ON film_category.film_id = film.film_id JOIN category ON film_category.category_id = category.category_id
+GROUP BY name
+ORDER BY name ASC;
+
+# alternative option
+SELECT name as category, count(film.film_id) as num_films
+FROM film_category JOIN film ON film_category.film_id = film.film_id JOIN category ON film_category.category_id = category.category_id
+GROUP BY name
+ORDER BY name ASC;
+
+# Query 3: Get a list of country names and a count of the cities that are in that country. 
+# Name the count column “num_cities”. Order the results alphabetically (ascending). 
+# Use the WHERE clause to join the tables.
+SELECT country, COUNT(city) as num_cities
+FROM country, city 
+WHERE country.country_id = city.country_id
+GROUP BY country
+ORDER BY country ASC;
+
+# Query 4: Repeat the query above using a JOIN clause instead of the WHERE clause
+SELECT country, COUNT(city) as num_cities
+FROM country JOIN city ON country.country_id = city.country_id
+GROUP BY country
+ORDER BY country ASC;
+
+# Query 5: Get a list of each customer’s last name and first name and the number of rentals they have. Name the count column “num_rentals”. 
+# Order the result by the number of rentals in descending order. 
+# The highest number of rentals should be at the top. Sort any ties (same number of rentals) by last name (ascending). 
+# Use the WHERE clause to join the tables.
+SELECT last_name, first_name, COUNT(*) as num_rentals
+FROM customer, rental
+WHERE customer.customer_id = rental.customer_id
+GROUP BY last_name, first_name, customer.customer_id
+ORDER BY num_rentals DESC, last_name ASC;
+
+# alternative option
+SELECT last_name, first_name, COUNT(rental_id) as num_rentals
+FROM customer, rental
+WHERE customer.customer_id = rental.customer_id
+GROUP BY last_name, first_name, customer.customer_id
+ORDER BY num_rentals DESC, last_name ASC;
+
+# Query 6: Repeat the query above using a JOIN clause instead of the WHERE clause.
+SELECT last_name, first_name, COUNT(*) as num_rentals
+FROM customer JOIN rental ON customer.customer_id = rental.customer_id
+GROUP BY last_name, first_name, customer.customer_id
+ORDER BY num_rentals DESC, last_name ASC;
+
+# alternative option
+SELECT last_name, first_name, COUNT(rental_id) as num_rentals
+FROM customer JOIN rental ON customer.customer_id = rental.customer_id
+GROUP BY last_name, first_name, customer.customer_id
+ORDER BY num_rentals DESC, last_name ASC;
+
+# Query 7: Get a list of each customer’s last name and first name and the amount of money they have spent on rentals. 
+# Name the sum column “total_spent”. Order the result by the amount in descending order. 
+# The highest amount of money spent should be at the top. Sort any ties (amount of money spent) by last name (ascending). 
+# Use the JOIN clause for this query.
+SELECT last_name, first_name, SUM(amount) as total_spent
+FROM customer JOIN payment ON customer.customer_id = payment.customer_id
+GROUP BY last_name, first_name, customer.customer_id
+ORDER BY total_spent DESC, last_name ASC;
+
+# Query 8: Get the number of actors in each film. 
+# Order the results (ascending) by the film title. 
+# Name the column with the actor count “num_actors”.
+SELECT title, COUNT(actor.actor_id) as num_actors
+FROM actor JOIN film_actor ON actor.actor_id = film_actor.actor_id JOIN film ON film_actor.film_id = film.film_id
+GROUP BY title, film.film_id
+ORDER BY title ASC;
+
+# Query 9: Get the number of films each manager holds. Use only the manager staff id to identify the manager. 
+# Name the column with the number of films “num_films”.
+SELECT manager_staff_id, COUNT(film.film_id) as num_films
+FROM store JOIN inventory ON store.store_id = inventory.store_id JOIN film ON inventory.film_id = film.film_id
+GROUP BY manager_staff_id;
+
+# Query 10: Get the number of customers per manager. Use only the manager staff id to identify the manager. 
+# Name the column with the number of films “num_customers”. Order by store id (ascending).
+
+SELECT manager_staff_id, COUNT(customer_id) as num_customers
+FROM store JOIN customer ON store.store_id = customer.store_id
+GROUP BY manager_staff_id
+ORDER BY store.store_id ASC;
