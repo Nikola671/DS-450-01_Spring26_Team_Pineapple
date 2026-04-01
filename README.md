@@ -8,3 +8,5 @@ The CAPO folder contains the CapoEDA file, which is where the final draft of our
 located along with other misellaneous used files and documents. 
 
 The Chemical Folder contains the excel and powerpoint files used in completing mini project three.
+
+The Writing SQL Queries Folder contains the sql script and python script along with a folder containing the sakila database data and schema.
