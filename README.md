@@ -9,4 +9,4 @@ located along with other misellaneous used files and documents.
 
 The Chemical Folder contains the excel and powerpoint files used in completing mini project three.
 
-The Writing SQL Queries Folder contains the sql script titled "DS-450 miniproject 4 sql section" and python script "Team Mini Project 4" along with a folder containing the sakila database data and schema.
+The Writing SQL Queries Folder contains the sql script titled "Team Mini Project 4.sql" and python script "Team Mini Project 4.ipynb" along with a folder containing the sakila database data and schema.
