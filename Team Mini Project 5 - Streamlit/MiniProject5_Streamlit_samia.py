@@ -12,6 +12,11 @@ import requests
 import pandas as pd
 import matplotlib.pyplot as plt
 
+# Imports for classification model
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier
+from sklearn.metrics import classification_report
+
 #Reading wine csv files
 red = pd.read_csv(r"C:\Users\AK Mahmood\Desktop\DS 450 SENIOR CAPSTONE\Team Mini Project 5 - Streamlit App\winequality-red.csv", sep = ';', header = 0)
 white = pd.read_csv(r"C:\Users\AK Mahmood\Desktop\DS 450 SENIOR CAPSTONE\Team Mini Project 5 - Streamlit App\winequality-white.csv", sep = ';', header = 0)
@@ -102,27 +107,33 @@ with tab5: # samia code
     # Create checkboxes
     # get the columns from the list of numeric columns
     for col in numeric_cols:
-        # create checkboxes using these columns
+        # create checkboxes using these columns and appending to the selected features list
         if st.checkbox(col):
             selected_features.append(col)
 
-    # Logic for plotting
+    # Logic for scatterplot
+    # if two boxes (features) are selected from the selected features list
     if len(selected_features) == 2:
-        x_feature = selected_features[0]
-        y_feature = selected_features[1]
+        x_feature = selected_features[0] # the first feature selected is assigned to the x-axis
+        y_feature = selected_features[1] # the second feature selected is assigned to the y-axis
 
+        # create scatterplot
         fig, ax = plt.subplots()
         ax.scatter(data[x_feature], data[y_feature], alpha=0.5)
 
+        # set the axis labels and title
         ax.set_xlabel(x_feature)
         ax.set_ylabel(y_feature)
         ax.set_title(f'{y_feature} vs {x_feature}')
 
+        # show the scatterplot
         st.pyplot(fig)
 
+    # If more than 2 features are selected, tell user to select only two features
     elif len(selected_features) > 2:
         st.warning("Please select only TWO features.")
 
+    # If no features are selected, tell user to select two features 
     else:
         st.info("Select two features to display the scatterplot.")
 
@@ -134,7 +145,51 @@ with tab6:
 with tab7:
     st.header('Classification Report')
 
+    # Step 1: Prepare data
+    df = data.copy()
 
+    # Step 2: Features (X) and target (y)
+    X = df.drop(['quality', 'Type'], axis=1) # features
+    y = df['quality'] # target
+
+    # Step 3: Train-test split (80/20)
+    X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2, random_state=42)
+
+    # Step 4: Train the Random Forest model
+    model = RandomForestClassifier(random_state=42)
+    model.fit(X_train, y_train)
+
+    # Step 5: Predictions
+    y_pred = model.predict(X_test)
+
+    # Step 6: Classification report
+    st.subheader("Classification Report")
+    report = classification_report(y_test, y_pred, output_dict=True)
+    st.dataframe(pd.DataFrame(report).transpose().round(2), use_container_width=True)
+
+    # Step 7: Feature importance
+    st.subheader("Feature Importance")
+
+    importance = pd.Series(model.feature_importances_, index=X.columns)
+    importance = importance.sort_values(ascending=False)
+
+    # Step 8: Plot the feature importance bar chart
+    fig, ax = plt.subplots(figsize=(12, 8))
+    importance.plot(kind='bar', ax=ax)
+
+    # Add the title and axis labels
+    ax.set_xlabel("Features", fontsize=15.5, labelpad=10)
+    ax.set_ylabel("Importance Score", fontsize=15.5, labelpad=10)
+
+    # Bigger tick labels
+    ax.tick_params(axis='x', labelsize=13)
+    ax.tick_params(axis='y', labelsize=13)
+
+    # Add labels on top of bars
+    for container in ax.containers:
+        ax.bar_label(container, fmt='%.2f', fontsize=15)
+    
+    st.pyplot(fig)
 
 
 
