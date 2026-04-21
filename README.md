@@ -10,3 +10,5 @@ located along with other misellaneous used files and documents.
 The Chemical Folder contains the excel and powerpoint files used in completing mini project three.
 
 The Writing SQL Queries Folder contains the sql script titled "Team Mini Project 4.sql" and python script "Team Mini Project 4.ipynb" along with a folder containing the sakila database data and schema.
+
+The Streamlit folder contains the data and code implemented in creating a Streamlit webpage for wine data. 
